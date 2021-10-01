@@ -1,13 +1,16 @@
 import { useMemo } from 'react';
-import { useTable } from 'react-table';
+import { useTable, useSortBy } from 'react-table';
 import MOCK_DATA from './MOCK_DATA.json';
 import { COLUMNS } from './columns';
 import './table.css';
+import Icon from '@material-ui/core/Icon';
+import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
+import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 
-export const BasicTable = () => {
+export const SortingTable = () => {
   const columns = useMemo(() => COLUMNS, []);
   const data = useMemo(() => MOCK_DATA, []);
-  const tableInstance = useTable({ columns, data });
+  const tableInstance = useTable({ columns, data }, useSortBy);
 
   const {
     getTableProps,
@@ -24,7 +27,24 @@ export const BasicTable = () => {
         {headerGroups.map(headerGroup => (
           <tr {...headerGroup.getHeaderGroupProps()}>
             {headerGroup.headers.map(column => (
-              <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+              <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                {column.render('Header')}
+                <Icon>
+                  {column.isSorted ? (
+                    column.isSortedDesc ? (
+                      <ArrowDownwardIcon
+                        style={{ width: '20px', height: '20px' }}
+                      />
+                    ) : (
+                      <ArrowUpwardIcon
+                        style={{ width: '20px', height: '20px' }}
+                      />
+                    )
+                  ) : (
+                    ''
+                  )}
+                </Icon>
+              </th>
             ))}
           </tr>
         ))}
